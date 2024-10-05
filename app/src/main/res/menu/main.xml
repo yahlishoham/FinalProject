@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/retToIntro"
+        android:title="return to start"
+        android:icon="@drawable/img"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/closeApp"
+        android:title="close app"
+        android:icon="@drawable/img_1"
+        app:showAsAction="ifRoom"/>
+
+</menu>

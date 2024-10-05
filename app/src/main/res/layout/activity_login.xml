@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".login">
+
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="168dp"
+        android:layout_height="153dp"
+        android:layout_marginTop="-8dp"
+        android:src="@drawable/logo" />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="110dp"
+        android:layout_marginRight="20dp"
+        android:ems="10"
+        android:hint="enter your email"
+        android:inputType="textEmailAddress"
+        android:textSize="20dp" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginRight="20dp"
+        android:ems="10"
+        android:hint="enter your password"
+        android:inputType="textPassword"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/Login"
+        android:layout_width="328dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginRight="20dp"
+        android:backgroundTint="@color/black"
+        android:text="login"
+        android:textSize="18dp" />
+
+    <Button
+        android:id="@+id/BackToSignup"
+        android:layout_width="340dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="130dp"
+        android:backgroundTint="@color/white"
+        android:text="still not registered? sign up"
+        android:textColor="#FF8C00"
+        android:textStyle="normal"
+        />
+
+
+</LinearLayout>
