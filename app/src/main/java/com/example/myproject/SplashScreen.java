@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class SplashScreen extends AppCompatActivity {
     // רכיבי ה-UI
     TextView textOpening;
     ImageView imageLogo;
@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.splash_screen);
 
         // קישור רכיבי ה-UI מה-XML
         textOpening = findViewById(R.id.textOpening);
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         buttonStart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // מעביר את המשתמש ל-Activity של MainActivity3
-                Intent first = new Intent(MainActivity.this, MainActivity3.class);
+                Intent first = new Intent(SplashScreen.this, HomePage.class);
                 startActivity(first);
             }
         });

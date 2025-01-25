@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical"
+    tools:context=".ItemRun">
+
+    <TextView
+        android:id="@+id/tv_run_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Distance: 5.0 km"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tv_run_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time: 00:30:15"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:fontFamily="sans-serif"
+        android:layout_marginBottom="8dp" />
+    <TextView
+        android:id="@+id/tv_step_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Steps: 0"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:fontFamily="sans-serif"
+        android:layout_marginBottom="8dp"
+        tools:text="Steps: 2000" />
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map_view"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="Map showing the start and end points of the run" />
+
+
+</LinearLayout>
