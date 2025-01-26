@@ -18,7 +18,7 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="40dp"
-        android:text="run at your pace" />
+        android:text="welcome to Fun Run" />
 
 
     <TextView
@@ -51,12 +51,5 @@
         android:text="let's start"
         android:textSize="18dp" />
 
-    <TextView
-        android:id="@+id/cdtShow"
-        android:layout_width="166dp"
-        android:layout_height="29dp"
-       android:layout_marginTop="72dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textSize="13dp" />
+
 </LinearLayout>

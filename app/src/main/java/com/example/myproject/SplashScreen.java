@@ -15,7 +15,6 @@ public class SplashScreen extends AppCompatActivity {
     ImageView imageLogo;
     TextView textFraze;
     Button buttonStart;
-    TextView cdtShow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +26,6 @@ public class SplashScreen extends AppCompatActivity {
         imageLogo = findViewById(R.id.imageLogo);
         textFraze = findViewById(R.id.textFraze);
         buttonStart = findViewById(R.id.buttonStart);
-        cdtShow = findViewById(R.id.cdtShow);
 
         // Listener ללחיצה על כפתור "התחלה"
         buttonStart.setOnClickListener(new View.OnClickListener() {
