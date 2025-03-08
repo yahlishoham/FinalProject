@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Collections;
 import java.util.List;
 
 public class PastRuns extends AppCompatActivity {
@@ -28,8 +29,10 @@ public class PastRuns extends AppCompatActivity {
         btnHome = findViewById(R.id.btn_home); // קישור לכפתור
         helperDB = new HelperDB(this);
 
+
         // שליפת כל הריצות ממסד הנתונים
         List<RunDetails> runList = helperDB.getAllRuns();
+        Collections.reverse(runList); // הופך את הרשימה כך שהאחרונה תהיה ראשונה
 
         // הגדרת LayoutManager עבור ה-RecyclerView
         rvPastRuns.setLayoutManager(new LinearLayoutManager(this));

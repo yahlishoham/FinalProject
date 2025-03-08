@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#FF8C00"
-    android:padding="16dp"
+    android:padding="24dp"
     tools:context=".HomePage">
 
     <!-- כותרת המסך -->
@@ -14,67 +14,59 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Welcome to Fun Run"
-        android:textSize="32sp"
+        android:text="Fun Run"
+        android:textSize="60sp"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:layout_marginTop="40dp" />
+        android:layout_marginTop="60dp" />
 
-    <!-- כותרת לכפתור "Start Run" -->
-    <TextView
-        android:id="@+id/tv_start_run_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Start a new run"
-        android:textSize="18sp"
-        android:textColor="@color/white"
-        android:layout_marginTop="50dp" />
-
-    <!-- כפתור להתחלת ריצה -->
-    <Button
-        android:id="@+id/buttonStartRun"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:backgroundTint="@color/black"
-        android:text="Start"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:padding="8dp" />
-
-    <!-- כותרת לכפתור "View History" -->
-    <TextView
-        android:id="@+id/tv_view_history_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="View your running history"
-        android:textSize="18sp"
-        android:textColor="@color/white"
-        android:layout_marginTop="30dp" />
-
-    <!-- כפתור לצפייה בהיסטוריה -->
-    <Button
-        android:id="@+id/buttonViewHistory"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:backgroundTint="@color/black"
-        android:text="History"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:padding="8dp" />
-
-    <!-- טקסט למוטיבציה -->
+    <!-- מוטיבציה לריצה -->
     <TextView
         android:id="@+id/tv_motivation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="go for a run.\nImprove every day!"
+        android:text="Push yourself to the limit!"
+        android:textSize="20sp"
+        android:textStyle="italic"
+        android:textColor="@color/white"
+        android:layout_marginTop="10dp" />
+
+    <!-- כפתור להתחלת ריצה -->
+    <Button
+        android:id="@+id/buttonStartRun"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/black"
+        android:text="Start Run"
+        android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:padding="12dp" />
+
+    <!-- כפתור לצפייה בהיסטוריה -->
+    <Button
+        android:id="@+id/buttonViewHistory"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/black"
+        android:text="View History"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:padding="12dp" />
+
+    <!-- תצוגת מזג אוויר -->
+    <TextView
+        android:id="@+id/tv_weather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loading weather..."
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
         android:textColor="@color/black"
-        android:layout_marginTop="40dp" />
+        android:layout_marginTop="30dp" />
 </LinearLayout>

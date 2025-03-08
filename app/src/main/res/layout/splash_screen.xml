@@ -11,20 +11,20 @@
     <TextView
         android:id="@+id/textOpening"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:layout_gravity="center"
-        android:gravity="center"
         android:layout_marginTop="18dp"
+        android:gravity="center"
+        android:text="welcome to Fun Run"
         android:textColor="@color/black"
-        android:textStyle="bold"
         android:textSize="40dp"
-        android:text="welcome to Fun Run" />
+        android:textStyle="bold" />
 
 
     <TextView
         android:id="@+id/textFraze"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:layout_gravity="center"
         android:layout_marginTop="26dp"
         android:gravity="center"

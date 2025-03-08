@@ -8,101 +8,127 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.util.Calendar;
 
 public class HomePage extends AppCompatActivity {
 
-    Button buttonStartRun;
-    Button buttonViewHistory;
-    Context context;
-    int requestCode = 123;
+    private static final String API_KEY = "YOUR_API_KEY"; // הכנס כאן את מפתח ה-API שלך
+    private static final double TEL_AVIV_LAT = 32.0853;
+    private static final double TEL_AVIV_LON = 34.7818;
 
+    private TextView tvWeather;
+    private Retrofit retrofit;
+    private Context context;
+    private int requestCode = 123;
+
+    private Button buttonStartRun;
+    private Button buttonViewHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home_page);
 
         buttonStartRun = findViewById(R.id.buttonStartRun);
         buttonViewHistory = findViewById(R.id.buttonViewHistory);
+        tvWeather = findViewById(R.id.tv_weather);
         context = this;
+
+        // יצירת אובייקט Retrofit
+        retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.openweathermap.org/data/3.0/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
         // הפעלת התראה יומית
         scheduleAlarm();
 
-
         // Listener ללחיצה על כפתור "התחלה"
-        buttonStartRun.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // מעביר את המשתמש ל-Activity של MainActivity3
-                Intent first = new Intent(HomePage.this, MapScreen.class);
-                startActivity(first);
-            }
+        buttonStartRun.setOnClickListener(v -> {
+            Intent first = new Intent(HomePage.this, MapScreen.class);
+            startActivity(first);
         });
-        // Listener ללחיצה על כפתור "התחלה"
-        buttonViewHistory.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // מעביר את המשתמש ל-Activity של MainActivity3
-                Intent first = new Intent(HomePage.this, PastRuns.class);
-                startActivity(first);
+
+        // Listener ללחיצה על כפתור "היסטוריה"
+        buttonViewHistory.setOnClickListener(v -> {
+            Intent first = new Intent(HomePage.this, PastRuns.class);
+            startActivity(first);
+        });
+
+        // שליפת נתוני מזג האוויר עבור תל אביב
+        fetchWeatherForTelAviv();
+    }
+
+    // 📌 שליחת בקשה ל-API של OpenWeatherMap לקבלת מזג האוויר בתל אביב
+    private void fetchWeatherForTelAviv() {
+        ApiService apiService = retrofit.create(ApiService.class);
+        Call<WeatherResponse> call = apiService.getWeather(TEL_AVIV_LAT, TEL_AVIV_LON, API_KEY, "metric");
+
+        call.enqueue(new Callback<WeatherResponse>() {
+            @Override
+            public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    WeatherResponse weather = response.body();
+                    String weatherInfo = "Tel Aviv\n" +
+                            "Temperature: " + weather.getCurrent().getTemp() + "°C\n" +
+                            "Description: " + weather.getCurrent().getWeather()[0].getDescription();
+                    tvWeather.setText(weatherInfo);
+                } else {
+                    tvWeather.setText("Error fetching weather data.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherResponse> call, Throwable t) {
+                tvWeather.setText("Error: " + t.getMessage());
             }
         });
     }
-    // Schedule alarm to send a notification every day at 08:30
+
+    // 📌 הפעלת התראה יומית (כפי שהיה קודם)
     private void scheduleAlarm() {
         createNotificationChannel();
-
-        // Set the message to be sent
         String message = "Don't forget about your daily run";
 
-        // Create intent to be sent to the receiver
         Intent notificationIntent = new Intent(context, ScheduleBroadCastReceiver.class);
-        // Pass the message to the intent
         notificationIntent.putExtra("message", message);
-        // Use a unique request code to manage the alarm
         notificationIntent.setAction("com.example.myproject.NOTIFICATION" + requestCode);
 
-        // Create a unique PendingIntent
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this,
-                requestCode, // Use unique request code
-                notificationIntent,
-                PendingIntent.FLAG_IMMUTABLE // Use FLAG_IMMUTABLE for security
-        );
+                this, requestCode, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
-        // Create a calendar instance and set it to 08:30 of the current day
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 8);
         calendar.set(Calendar.MINUTE, 30);
         calendar.set(Calendar.SECOND, 0);
 
-        // If the current time is after 08:30, schedule for the next day
         if (System.currentTimeMillis() > calendar.getTimeInMillis()) {
             calendar.add(Calendar.DAY_OF_YEAR, 1);
         }
 
-        // Create an alarm manager and set the alarm
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        // Set the alarm to trigger daily at the specified time
         alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, // Repeat daily
+                AlarmManager.INTERVAL_DAY,
                 pendingIntent
         );
     }
 
-    // Create a notification channel for the alarm
+    // 📌 יצירת ערוץ התראות (כפי שהיה קודם)
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "NotificationChannel";
@@ -110,10 +136,8 @@ public class HomePage extends AppCompatActivity {
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel("notifyChannel", name, importance);
             channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
 }
-

@@ -6,10 +6,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -46,6 +49,19 @@ public class Adapter extends RecyclerView.Adapter<Adapter.RunViewHolder> {
             googleMap.addMarker(new MarkerOptions().position(startPoint).title("Start"));
             googleMap.addMarker(new MarkerOptions().position(finishPoint).title("Finish"));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPoint, 10));
+        });
+
+        // לוודא שהמפה נשארת פעילה
+        holder.mapView.onResume();
+
+        // פתיחת מסך מלא כאשר לוחצים על המפה
+        holder.mapView.setOnClickListener(v -> {
+            FragmentManager fragmentManager = ((AppCompatActivity) v.getContext()).getSupportFragmentManager();
+            FullScreenMapDialogFragment dialog = FullScreenMapDialogFragment.newInstance(
+                    run.getStartingPointLatitude(), run.getStartingPointLongitude(),
+                    run.getFinishPointLatitude(), run.getFinishPointLongitude()
+            );
+            dialog.show(fragmentManager, "FullScreenMapDialog");
         });
     }
 
