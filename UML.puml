@@ -1,0 +1,42 @@
+@startuml
+class model.WeatherResponse {
+- CurrentWeather current
+}
+
+class model.WeatherResponse$CurrentWeather {
+- double temp
+- Weather[] weather
+}
+
+class model.WeatherResponse$Weather {
+- String description
+}
+
+class model.RunDetails {
+- String runTime
+- double runDistance
+- double startingPointLatitude
+- double startingPointLongitude
+- double finishPointLatitude
+- double finishPointLongitude
+- int stepCounter
+}
+
+class model.HelperDB {
++ {static} String DB_FILE
++ {static} String TABLE_RESULT
++ {static} String STARTING_POINT_LAT
++ {static} String STARTING_POINT_LON
++ {static} String FINISH_POINT_LAT
++ {static} String FINISH_POINT_LON
++ {static} String RUN_TIME
++ {static} String RUN_DISTANCE
++ {static} String STEP_COUNTER
+}
+
+
+
+model.WeatherResponse +.. model.WeatherResponse$CurrentWeather
+model.WeatherResponse +.. model.WeatherResponse$Weather
+android.database.sqlite.SQLiteOpenHelper <|-- model.HelperDB
+@enduml

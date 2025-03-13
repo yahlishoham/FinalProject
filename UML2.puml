@@ -1,0 +1,127 @@
+@startuml
+class com.example.myproject.WeatherResponse {
+- CurrentWeather current
+}
+
+class com.example.myproject.WeatherResponse$CurrentWeather {
+- double temp
+- Weather[] weather
+}
+
+class com.example.myproject.WeatherResponse$Weather {
+- String description
+}
+
+class com.example.myproject.FullScreenMapDialogFragment {
+- double startLat
+- GoogleMap mMap
+}
+
+class com.example.myproject.PastRuns {
+- RecyclerView rvPastRuns
+- Adapter runAdapter
+- HelperDB helperDB
+- Button btnHome
+}
+
+class com.example.myproject.ScheduleBroadCastReceiver {
+~ String message
+}
+
+interface com.example.myproject.ApiService {
+}
+class com.example.myproject.HomePage {
+- {static} String API_KEY
+- {static} int LOCATION_PERMISSION_REQUEST_CODE
+- TextView tvWeather
+- Retrofit retrofit
+- Context context
+- int requestCode
+- FusedLocationProviderClient fusedLocationClient
+- Button buttonStartRun
+- Button buttonViewHistory
+}
+
+class model.HelperDB {
++ {static} String DB_FILE
++ {static} String TABLE_RESULT
++ {static} String STARTING_POINT_LAT
++ {static} String STARTING_POINT_LON
++ {static} String FINISH_POINT_LAT
++ {static} String FINISH_POINT_LON
++ {static} String RUN_TIME
++ {static} String RUN_DISTANCE
++ {static} String STEP_COUNTER
+}
+
+class com.example.myproject.SplashScreen {
+~ TextView textOpening
+~ ImageView imageLogo
+~ TextView textFraze
+~ Button buttonStart
+}
+
+class model.RunDetails {
+- String runTime
+- double runDistance
+- double startingPointLatitude
+- double startingPointLongitude
+- double finishPointLatitude
+- double finishPointLongitude
+- int stepCounter
+}
+
+class com.example.myproject.ItemRun {
+}
+class com.example.myproject.MapScreen {
+- TextView tvTimer
+- Button btnStartStop
+- Handler handler
+- long startTime
+- boolean isRunning
+- FusedLocationProviderClient fusedLocationClient
+- LocationRequest locationRequest
+- LocationCallback locationCallback
+- SensorManager sensorManager
+- Sensor stepCounterSensor
+- int stepCounterInitialValue
+- int stepsDuringRun
+- GoogleMap googleMap
+- double startingPointLatitude
+- double startingPointLongitude
+- double finishPointLatitude
+- double finishPointLongitude
+- double totalDistance
+- Location lastLocation
+- {static} int LOCATION_PERMISSION_REQUEST_CODE
+- Runnable updateTimer
+}
+
+class com.example.myproject.Adapter {
+- List<RunDetails> runList
+}
+
+class com.example.myproject.Adapter$RunViewHolder {
+~ TextView tvRunDistance
+~ MapView mapView
+}
+
+
+
+com.example.myproject.WeatherResponse +.. com.example.myproject.WeatherResponse$CurrentWeather
+com.example.myproject.WeatherResponse +.. com.example.myproject.WeatherResponse$Weather
+com.google.android.gms.maps.OnMapReadyCallback <|.. com.example.myproject.FullScreenMapDialogFragment
+androidx.fragment.app.DialogFragment <|-- com.example.myproject.FullScreenMapDialogFragment
+androidx.appcompat.app.AppCompatActivity <|-- com.example.myproject.PastRuns
+android.content.BroadcastReceiver <|-- com.example.myproject.ScheduleBroadCastReceiver
+androidx.appcompat.app.AppCompatActivity <|-- com.example.myproject.HomePage
+android.database.sqlite.SQLiteOpenHelper <|-- model.HelperDB
+androidx.appcompat.app.AppCompatActivity <|-- com.example.myproject.SplashScreen
+androidx.appcompat.app.AppCompatActivity <|-- com.example.myproject.ItemRun
+android.hardware.SensorEventListener <|.. com.example.myproject.MapScreen
+com.google.android.gms.maps.OnMapReadyCallback <|.. com.example.myproject.MapScreen
+androidx.fragment.app.FragmentActivity <|-- com.example.myproject.MapScreen
+com.example.myproject.Adapter <|-- com.example.myproject.Adapter
+com.example.myproject.Adapter +.. com.example.myproject.Adapter$RunViewHolder
+com.example.myproject.ViewHolder <|-- com.example.myproject.Adapter$RunViewHolder
+@enduml
