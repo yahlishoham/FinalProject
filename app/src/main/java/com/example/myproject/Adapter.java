@@ -35,9 +35,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.RunViewHolder> {
     public void onBindViewHolder(@NonNull RunViewHolder holder, int position) {
         RunDetails run = runList.get(position);
 
-        // עדכון הטקסטים עם הנתונים האמיתיים
+        // 📌 עדכון הטקסטים עם הנתונים האמיתיים
         holder.tvRunDistance.setText(String.format("Distance: %.2f km", run.getRunDistance()));
         holder.tvRunTime.setText(String.format("Time: %s", run.getRunTime()));
+        holder.tvStepCounter.setText(String.format("Steps: %d", run.getStepCounter())); // 📌 הוספנו את שורת הצעדים
 
         // עדכון המפה
         holder.mapView.onCreate(null);
@@ -50,18 +51,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.RunViewHolder> {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPoint, 10));
         });
 
-        // לוודא שהמפה נשארת פעילה
-        holder.mapView.onResume();
 
-        // פתיחת מסך מלא כאשר לוחצים על המפה
-        holder.mapView.setOnClickListener(v -> {
-            FragmentManager fragmentManager = ((AppCompatActivity) v.getContext()).getSupportFragmentManager();
-            FullScreenMapDialogFragment dialog = FullScreenMapDialogFragment.newInstance(
-                    run.getStartingPointLatitude(), run.getStartingPointLongitude(),
-                    run.getFinishPointLatitude(), run.getFinishPointLongitude()
-            );
-            dialog.show(fragmentManager, "FullScreenMapDialog");
-        });
     }
 
     @Override
@@ -70,13 +60,14 @@ public class Adapter extends RecyclerView.Adapter<Adapter.RunViewHolder> {
     }
 
     static class RunViewHolder extends RecyclerView.ViewHolder {
-        TextView tvRunDistance, tvRunTime;
+        TextView tvRunDistance, tvRunTime, tvStepCounter; // 📌 הוספנו כאן tvStepCounter
         MapView mapView;
 
         public RunViewHolder(@NonNull View itemView) {
             super(itemView);
             tvRunDistance = itemView.findViewById(R.id.tv_run_distance);
             tvRunTime = itemView.findViewById(R.id.tv_run_time);
+            tvStepCounter = itemView.findViewById(R.id.tv_step_counter); // 📌 מצביע לטקסט של הצעדים
             mapView = itemView.findViewById(R.id.map_view);
         }
     }

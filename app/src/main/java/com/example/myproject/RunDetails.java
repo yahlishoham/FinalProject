@@ -1,5 +1,7 @@
 package com.example.myproject;
 
+
+
 public class RunDetails {
     private String runTime;
     private double runDistance;

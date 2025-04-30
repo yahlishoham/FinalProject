@@ -15,9 +15,12 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.media.MediaPlayer;
+
 
 
 import androidx.annotation.NonNull;
@@ -43,7 +46,9 @@ public class MapScreen extends FragmentActivity implements SensorEventListener, 
 
 
     private TextView tvTimer, tvDistance;
-    private Button btnStartStop;
+    private Button btnStartStop, btnToggleMusic;
+    private TextView tvCountdown;
+
 
 
     private Handler handler = new Handler();
@@ -86,6 +91,9 @@ public class MapScreen extends FragmentActivity implements SensorEventListener, 
         tvTimer = findViewById(R.id.tv_timer);
         tvDistance = findViewById(R.id.tv_distance);
         btnStartStop = findViewById(R.id.btn_start_stop);
+        btnToggleMusic = findViewById(R.id.btn_toggle_music);
+        tvCountdown = findViewById(R.id.tv_countdown);
+
 
 
         // Initialize map fragment
@@ -103,16 +111,32 @@ public class MapScreen extends FragmentActivity implements SensorEventListener, 
         stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
 
+        // כפתור להתחלה ועצירה
         btnStartStop.setOnClickListener(v -> {
             if (isRunning) {
                 stopTracking();
+                stopMusic();
             } else {
                 if (checkPermissions()) {
                     startTracking();
+                    startMusic();
                 } else {
                     requestPermissions();
                 }
             }
+        });
+
+        // כפתור עצירה והמשך של המוזיקה
+        btnToggleMusic.setOnClickListener(v -> {
+            Intent intent = new Intent(this, MusicService.class);
+            if (MusicService.isPaused) {
+                intent.putExtra("action", "resume");
+                btnToggleMusic.setText("⏸️ Pause Music");
+            } else {
+                intent.putExtra("action", "pause");
+                btnToggleMusic.setText("▶️ Play Music");
+            }
+            startService(intent);
         });
     }
 
@@ -153,41 +177,56 @@ public class MapScreen extends FragmentActivity implements SensorEventListener, 
 
 
     private void startTracking() {
-        isRunning = true;
-        totalDistance = 0f;
-        stepsDuringRun = 0;
-        stepCounterInitialValue = -1;
-        lastLocation = null;
-        startTime = System.currentTimeMillis();
+        tvCountdown.setVisibility(View.VISIBLE); // מציגים את הספירה
+        new android.os.CountDownTimer(4000, 1000) {
+            int count = 3;
 
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
-
-
-            fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
-                if (location != null) {
-                    startingPointLatitude = location.getLatitude();
-                    startingPointLongitude = location.getLongitude();
+            public void onTick(long millisUntilFinished) {
+                if (count > 0) {
+                    tvCountdown.setText(String.valueOf(count)); // מציג מספר
+                    animateCountdown();
+                    count--;
                 }
-            });
-        } else {
-            Toast.makeText(this, "Permission not granted. Cannot start tracking.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+            }
 
+            public void onFinish() {
+                tvCountdown.setText("GO!"); // מציג GO בסוף
+                new android.os.Handler().postDelayed(() -> {
+                    tvCountdown.setVisibility(View.GONE); // מסתיר את הספירה
 
-        if (stepCounterSensor != null) {
-            sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_UI);
-        }
+                    // כאן מתחיל המעקב הרגיל
+                    isRunning = true;
+                    totalDistance = 0f;
+                    stepsDuringRun = 0;
+                    stepCounterInitialValue = -1;
+                    lastLocation = null;
+                    startTime = System.currentTimeMillis();
 
+                    if (ActivityCompat.checkSelfPermission(MapScreen.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
 
-        handler.post(updateTimer);
+                        fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+                            if (location != null) {
+                                startingPointLatitude = location.getLatitude();
+                                startingPointLongitude = location.getLongitude();
+                            }
+                        });
+                    }
 
+                    if (stepCounterSensor != null) {
+                        sensorManager.registerListener(MapScreen.this, stepCounterSensor, SensorManager.SENSOR_DELAY_UI);
+                    }
 
-        btnStartStop.setText("Stop");
-        btnStartStop.setBackgroundTintList(ContextCompat.getColorStateList(this, android.R.color.holo_red_light));
+                    handler.post(updateTimer);
+
+                    btnStartStop.setText("Stop");
+                    btnStartStop.setBackgroundTintList(ContextCompat.getColorStateList(MapScreen.this, android.R.color.holo_red_light));
+                }, 800); // ממתין 800ms לפני שמתחילים אחרי ה-GO
+            }
+        }.start();
     }
+
+
 
 
     private void stopTracking() {
@@ -195,18 +234,15 @@ public class MapScreen extends FragmentActivity implements SensorEventListener, 
         handler.removeCallbacks(updateTimer);
         fusedLocationClient.removeLocationUpdates(locationCallback);
 
-
         sensorManager.unregisterListener(this);
 
-
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        String runTime = formatElapsedTime(elapsedTime);
-
+        long elapsedTimeMillis = System.currentTimeMillis() - startTime;
+        long elapsedTimeSeconds = elapsedTimeMillis / 1000;
+        String runTime = formatElapsedTime(elapsedTimeSeconds);
 
         if (lastLocation != null) {
             finishPointLatitude = lastLocation.getLatitude();
             finishPointLongitude = lastLocation.getLongitude();
-
 
             saveRunToDatabase(runTime, totalDistance, stepsDuringRun,
                     startingPointLatitude, startingPointLongitude,
@@ -215,14 +251,13 @@ public class MapScreen extends FragmentActivity implements SensorEventListener, 
             Toast.makeText(this, "Unable to save run. Missing location data.", Toast.LENGTH_SHORT).show();
         }
 
-
         btnStartStop.setBackgroundTintList(ContextCompat.getColorStateList(this, android.R.color.holo_green_light));
-;       btnStartStop.setText("Start");
+        btnStartStop.setText("Start");
 
         Intent intent = new Intent(MapScreen.this, HomePage.class);
         startActivity(intent);
-
     }
+
 
 
     private void saveRunToDatabase(String runTime, double distance, int steps,
@@ -242,6 +277,17 @@ public class MapScreen extends FragmentActivity implements SensorEventListener, 
         helperDB.saveRunToDB(runDetails);
         Toast.makeText(this, "Run saved successfully!", Toast.LENGTH_SHORT).show();
     }
+
+    private void startMusic() {
+        Intent musicIntent = new Intent(this, MusicService.class);
+        startService(musicIntent);
+    }
+
+    private void stopMusic() {
+        Intent musicIntent = new Intent(this, MusicService.class);
+        stopService(musicIntent);
+    }
+
 
 
     @Override
@@ -274,6 +320,17 @@ public class MapScreen extends FragmentActivity implements SensorEventListener, 
             }
         }
     };
+
+    private void animateCountdown() {
+        tvCountdown.setScaleX(0.5f);
+        tvCountdown.setScaleY(0.5f);
+        tvCountdown.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .setDuration(500)
+                .start();
+    }
+
 
 
 

@@ -1,28 +1,57 @@
 @startuml
-class model.WeatherResponse {
-- CurrentWeather current
+class com.example.myproject.BR {
++ {static} int _all
 }
 
-class model.WeatherResponse$CurrentWeather {
-- double temp
-- Weather[] weather
+class com.example.myproject.PastRuns {
+- RecyclerView rvPastRuns
+- Adapter runAdapter
+- HelperDB helperDB
+- Button btnHome
+- Button btnOpenSummary
+- List<RunDetails> runList
 }
 
-class model.WeatherResponse$Weather {
-- String description
+class com.example.myproject.ScheduleBroadCastReceiver {
+~ String message
 }
 
-class model.RunDetails {
-- String runTime
-- double runDistance
-- double startingPointLatitude
-- double startingPointLongitude
-- double finishPointLatitude
-- double finishPointLongitude
-- int stepCounter
+interface com.example.myproject.ApiService {
+}
+class com.example.myproject.databinding.ActivityItemRunBinding {
+- CardView rootView
++ CardView cardViewRun
++ MapView mapView
++ TextView tvRunDistance
++ TextView tvRunTime
++ TextView tvStepCounter
 }
 
-class model.HelperDB {
+class com.example.myproject.HomePage {
+- {static} String API_KEY
+- {static} int LOCATION_PERMISSION_REQUEST_CODE
+- {static} int NOTIFICATION_PERMISSION_REQUEST_CODE
+- TextView tvWeather
+- Retrofit retrofit
+- Context context
+- ImageView ivLogo
+- int requestCode
+- FusedLocationProviderClient fusedLocationClient
+- Button buttonStartRun
+- Button buttonViewHistory
+}
+
+class com.example.myproject.databinding.ActivityMapScreenBinding {
+- LinearLayout rootView
++ Button btnStartStop
++ Button btnToggleMusic
++ LinearLayout main
++ TextView tvCountdown
++ TextView tvDistance
++ TextView tvTimer
+}
+
+class com.example.myproject.HelperDB {
 + {static} String DB_FILE
 + {static} String TABLE_RESULT
 + {static} String STARTING_POINT_LAT
@@ -34,9 +63,182 @@ class model.HelperDB {
 + {static} String STEP_COUNTER
 }
 
+class com.example.myproject.DataBindingTriggerClass {
+}
+class com.example.myproject.databinding.ActivityHomePageBinding {
+- LinearLayout rootView
++ Button buttonStartRun
++ Button buttonViewHistory
++ ImageView ivLogo
++ TextView tvHomeTitle
++ TextView tvMotivation
++ TextView tvWeather
+}
+
+class com.example.myproject.RunDetails {
+- String runTime
+- double runDistance
+- double startingPointLatitude
+- double startingPointLongitude
+- double finishPointLatitude
+- double finishPointLongitude
+- int stepCounter
+}
+
+class androidx.databinding.library.baseAdapters.BR {
++ {static} int _all
+}
+
+class com.example.myproject.RunAdapter {
+- List<RunDetails> runList
+}
+
+class com.example.myproject.RunAdapter$RunViewHolder {
+~ TextView tvRunDistance
+~ MapView mapView
+}
+
+class com.example.myproject.ExampleUnitTest {
+}
+class com.example.myproject.DataBinderMapperImpl {
+- {static} SparseIntArray INTERNAL_LAYOUT_ID_LOOKUP
+}
+
+class com.example.myproject.DataBinderMapperImpl$InnerBrLookup {
+~ {static} SparseArray<String> sKeys
+}
+
+class com.example.myproject.DataBinderMapperImpl$InnerLayoutIdLookup {
+~ {static} HashMap<String,Integer> sKeys
+}
+
+class com.example.myproject.ExampleInstrumentedTest {
+}
+class com.example.myproject.databinding.SplashScreenBinding {
+- LinearLayout rootView
++ Button buttonStart
++ ImageView imageLogo
++ TextView textFraze
++ TextView textOpening
+}
+
+class androidx.databinding.DataBinderMapperImpl {
+}
+class com.example.myproject.WeatherResponse {
+- CurrentWeather current
+}
+
+class com.example.myproject.WeatherResponse$CurrentWeather {
+- double temp
+- Weather[] weather
+}
+
+class com.example.myproject.WeatherResponse$Weather {
+- String description
+}
+
+class ApiService {
+}
+interface androidx.databinding.DataBindingComponent {
+}
+class com.example.myproject.SummaryFragment {
+- {static} String ARG_RUNS
+- ArrayList<RunDetails> runList
+}
+
+class com.example.myproject.MusicService {
+- MediaPlayer mediaPlayer
++ {static} boolean isPaused
+}
+
+class com.example.myproject.SplashScreen {
+~ TextView textOpening
+~ ImageView imageLogo
+~ TextView textFraze
+~ Button buttonStart
+}
+
+class com.example.myproject.MapScreen {
+- TextView tvTimer
+- Button btnStartStop
+- TextView tvCountdown
+- Handler handler
+- long startTime
+- boolean isRunning
+- FusedLocationProviderClient fusedLocationClient
+- LocationRequest locationRequest
+- LocationCallback locationCallback
+- SensorManager sensorManager
+- Sensor stepCounterSensor
+- int stepCounterInitialValue
+- int stepsDuringRun
+- GoogleMap googleMap
+- double startingPointLatitude
+- double startingPointLongitude
+- double finishPointLatitude
+- double finishPointLongitude
+- double totalDistance
+- Location lastLocation
+- {static} int LOCATION_PERMISSION_REQUEST_CODE
+- Runnable updateTimer
+}
+
+class RunAdapter {
+}
+class com.example.myproject.databinding.ActivityPastRunsBinding {
+- LinearLayout rootView
++ Button btnHome
++ Button btnOpenSummary
++ FrameLayout fragmentContainer
++ LinearLayout main
++ RecyclerView rvPastRuns
++ TextView tvTitlePastRuns
+}
+
+class com.example.myproject.Adapter {
+- List<RunDetails> runList
+}
+
+class com.example.myproject.Adapter$RunViewHolder {
+~ TextView tvRunDistance
+~ MapView mapView
+}
+
+class com.example.myproject.databinding.FragmentSummaryBinding {
+- CardView rootView
++ Button btnClose
++ TextView tvMotivation
++ TextView tvTotalRuns
+}
 
 
-model.WeatherResponse +.. model.WeatherResponse$CurrentWeather
-model.WeatherResponse +.. model.WeatherResponse$Weather
-android.database.sqlite.SQLiteOpenHelper <|-- model.HelperDB
+
+androidx.appcompat.app.AppCompatActivity <|-- com.example.myproject.PastRuns
+android.content.BroadcastReceiver <|-- com.example.myproject.ScheduleBroadCastReceiver
+androidx.viewbinding.ViewBinding <|.. com.example.myproject.databinding.ActivityItemRunBinding
+androidx.appcompat.app.AppCompatActivity <|-- com.example.myproject.HomePage
+androidx.viewbinding.ViewBinding <|.. com.example.myproject.databinding.ActivityMapScreenBinding
+android.database.sqlite.SQLiteOpenHelper <|-- com.example.myproject.HelperDB
+androidx.viewbinding.ViewBinding <|.. com.example.myproject.databinding.ActivityHomePageBinding
+com.example.myproject.Adapter <|-- com.example.myproject.RunAdapter
+com.example.myproject.RunAdapter +.. com.example.myproject.RunAdapter$RunViewHolder
+com.example.myproject.ViewHolder <|-- com.example.myproject.RunAdapter$RunViewHolder
+androidx.databinding.DataBinderMapper <|-- com.example.myproject.DataBinderMapperImpl
+com.example.myproject.DataBinderMapperImpl +.. com.example.myproject.DataBinderMapperImpl$InnerBrLookup
+com.example.myproject.DataBinderMapperImpl +.. com.example.myproject.DataBinderMapperImpl$InnerLayoutIdLookup
+androidx.viewbinding.ViewBinding <|.. com.example.myproject.databinding.SplashScreenBinding
+androidx.databinding.MergedDataBinderMapper <|-- androidx.databinding.DataBinderMapperImpl
+com.example.myproject.WeatherResponse +.. com.example.myproject.WeatherResponse$CurrentWeather
+com.example.myproject.WeatherResponse +.. com.example.myproject.WeatherResponse$Weather
+androidx.fragment.app.Fragment <|-- com.example.myproject.SummaryFragment
+android.app.Service <|-- com.example.myproject.MusicService
+androidx.appcompat.app.AppCompatActivity <|-- com.example.myproject.SplashScreen
+android.hardware.SensorEventListener <|.. com.example.myproject.MapScreen
+com.google.android.gms.maps.OnMapReadyCallback <|.. com.example.myproject.MapScreen
+androidx.fragment.app.FragmentActivity <|-- com.example.myproject.MapScreen
+androidx.viewbinding.ViewBinding <|.. com.example.myproject.databinding.ActivityPastRunsBinding
+com.example.myproject.Adapter <|-- com.example.myproject.Adapter
+com.example.myproject.Adapter +.. com.example.myproject.Adapter$RunViewHolder
+com.example.myproject.ViewHolder <|-- com.example.myproject.Adapter$RunViewHolder
+androidx.viewbinding.ViewBinding <|.. com.example.myproject.databinding.FragmentSummaryBinding
 @enduml
