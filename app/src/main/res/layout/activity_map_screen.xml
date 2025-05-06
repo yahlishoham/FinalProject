@@ -7,17 +7,33 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/black"
+    android:padding="12dp"
     tools:context=".MapScreen">
 
-
-    <Button
-        android:id="@+id/btn_toggle_music"
-        android:layout_width="wrap_content"
+    <!-- כפתורים עליונים: מוזיקה + חזרה -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="⏸️ Pause Music"
-        android:backgroundTint="@color/black"
-        android:textColor="#FFFFFF"
-        android:layout_marginTop="12dp" />
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/btn_toggle_music"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⏸️ Pause Music"
+            android:backgroundTint="@color/black"
+            android:textColor="#FFFFFF"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btn_return_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🏠 Home"
+            android:backgroundTint="@color/black"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
 
     <!-- טיימר -->
     <TextView
@@ -25,32 +41,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif-medium"
         android:text="00:00:00"
         android:textColor="#FFFFFF"
-        android:textSize="48sp"
-        android:fontFamily="sans-serif-medium" />
+        android:textSize="48sp" />
 
-    <!-- כפתור Start/Stop -->
+    <!-- כפתור התחלה / עצירה -->
     <Button
         android:id="@+id/btn_start_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="#4CAF50"
         android:text="Start"
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
 
+    <!-- תצוגת מרחק -->
     <TextView
         android:id="@+id/tv_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Distance: 0.00 kilometers"
-        android:textSize="24sp"
-        android:layout_gravity="center" />
-
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp" />
 
     <!-- מפה -->
     <fragment
@@ -60,11 +78,11 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <!-- ספירה לאחור -->
     <TextView
         android:id="@+id/tv_countdown"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="100dp"
         android:gravity="center"
         android:text=""
         android:textSize="72sp"

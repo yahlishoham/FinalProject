@@ -37,75 +37,84 @@ import java.util.Calendar;
 
 public class HomePage extends AppCompatActivity {
 
+    // 🔑 קבועים (API key, קוד בקשת הרשאות)
     private static final String API_KEY = "a4674faf81cd3ab9005ca15c6b243603";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final int NOTIFICATION_PERMISSION_REQUEST_CODE = 2001;
 
+    // 🧱 משתנים עבור ממשק המשתמש
     private TextView tvWeather;
-    private Retrofit retrofit;
-    private Context context;
     private ImageView ivLogo;
-
-    private int requestCode = 123;
-    private FusedLocationProviderClient fusedLocationClient;
-
     private Button buttonStartRun;
     private Button buttonViewHistory;
 
+    // 🛠 אובייקטים לעבודה עם מיקום, אינטרנט והתראות
+    private Retrofit retrofit;
+    private Context context;
+    private int requestCode = 123;
+    private FusedLocationProviderClient fusedLocationClient;
+
+    // 🟢 פעולה ראשית שמופעלת כשמסך הבית נוצר
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
+        // קישור רכיבים מה־XML לקוד
         buttonStartRun = findViewById(R.id.buttonStartRun);
         buttonViewHistory = findViewById(R.id.buttonViewHistory);
         tvWeather = findViewById(R.id.tv_weather);
         ivLogo = findViewById(R.id.iv_logo);
-
         context = this;
 
+        // הגדרת שירות למיקום
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        // ✨ סיבוב של הלוגו בלחיצה
         ivLogo.setOnClickListener(v -> {
-            v.animate()
-                    .rotationBy(360)
-                    .setDuration(900)
-                    .start();
+            v.animate().rotationBy(360).setDuration(900).start();
         });
 
+        // 🔌 חיבור ל־API של מזג האוויר עם Retrofit
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.openweathermap.org/data/3.0/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        // בקשת רשות לשליחת התראות באנדרואיד 13+
+        // 📱 בקשת הרשאה להתראות באנדרואיד 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_REQUEST_CODE);
             }
         }
 
+        // ⏰ הגדרת התראת תזכורת יומית
         scheduleAlarm();
 
+        // ▶️ כפתור התחלת ריצה
         buttonStartRun.setOnClickListener(v -> {
             buttonStartRun.setEnabled(false); // מונע לחיצה כפולה
             Intent first = new Intent(HomePage.this, MapScreen.class);
             startActivity(first);
-            v.postDelayed(() -> buttonStartRun.setEnabled(true), 1000); // מחזיר לאחר שנייה
-
+            v.postDelayed(() -> buttonStartRun.setEnabled(true), 1000); // מחזיר את הכפתור לאחר שנייה
         });
 
+        // 📊 כפתור לצפייה בריצות קודמות
         buttonViewHistory.setOnClickListener(v -> {
             buttonViewHistory.setEnabled(false); // מונע לחיצה כפולה
             Intent first = new Intent(HomePage.this, PastRuns.class);
             startActivity(first);
-            v.postDelayed(() -> buttonViewHistory.setEnabled(true), 1000); // מחזיר לאחר שנייה
+            v.postDelayed(() -> buttonViewHistory.setEnabled(true), 1000);
         });
 
+        // ⛅ שליפת מזג האוויר הנוכחי לפי מיקום
         getWeatherForCurrentLocation();
+
+        // ✨ אנימציות ל־UI
         animateViews();
     }
 
+    // ✨ הפעלת אנימציות על הרכיבים בכניסת המסך
     private void animateViews() {
         fadeInView(tvWeather, 0);
         fadeInView(buttonStartRun, 200);
@@ -115,11 +124,13 @@ public class HomePage extends AppCompatActivity {
         slideInWeather(tvWeather);
     }
 
+    // 🎨 אנימציית הופעה הדרגתית
     private void fadeInView(View view, long delay) {
         view.setAlpha(0f);
         view.animate().alpha(1f).setStartDelay(delay).setDuration(1000).start();
     }
 
+    // 🎨 אנימציית "ניתור" לכפתורים
     private void bounceButton(View view, long delay) {
         view.setScaleX(0.7f);
         view.setScaleY(0.7f);
@@ -132,11 +143,13 @@ public class HomePage extends AppCompatActivity {
                 .start();
     }
 
+    // 🎨 אנימציית כניסה אנכית לטקסט מזג האוויר
     private void slideInWeather(View view) {
         view.setTranslationY(300f);
         view.animate().translationY(0f).setDuration(1000).start();
     }
 
+    // 📍 בקשת מיקום נוכחי ואז שליפת מזג האוויר
     private void getWeatherForCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
@@ -154,6 +167,7 @@ public class HomePage extends AppCompatActivity {
         });
     }
 
+    // 🔄 שליחת בקשת מזג אוויר לשרת
     private void fetchWeatherFromAPI(double latitude, double longitude) {
         ApiService apiService = retrofit.create(ApiService.class);
         Call<WeatherResponse> call = apiService.getWeather(latitude, longitude, API_KEY, "metric");
@@ -185,7 +199,7 @@ public class HomePage extends AppCompatActivity {
         });
     }
 
-
+    // 📢 תרגום של מזג אוויר לטקסט מוטיבציוני
     private String getWeatherMessage(double temp, String desc) {
         if (desc.contains("rain") || desc.contains("storm") || desc.contains("drizzle")) return "Not ideal for running today, it's rainy ☔";
         if (desc.contains("snow")) return "It's too cold for a run, snowy outside ❄️";
@@ -197,6 +211,7 @@ public class HomePage extends AppCompatActivity {
         return "Very hot weather! It's better to avoid running 🌞🔥";
     }
 
+    // 🛡 טיפול בתוצאה של בקשת הרשאות
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -213,6 +228,7 @@ public class HomePage extends AppCompatActivity {
         }
     }
 
+    // 🌐 בדיקת זמינות אינטרנט
     private boolean isInternetAvailable() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm != null) {
@@ -230,7 +246,7 @@ public class HomePage extends AppCompatActivity {
         return false;
     }
 
-
+    // ⏰ קביעת תזכורת יומית לריצה באמצעות AlarmManager
     private void scheduleAlarm() {
         createNotificationChannel();
         String message = "Don't forget about your daily run";
@@ -247,6 +263,7 @@ public class HomePage extends AppCompatActivity {
         calendar.set(Calendar.MINUTE, 30);
         calendar.set(Calendar.SECOND, 0);
 
+        // אם השעה כבר עברה – קובע למחר
         if (System.currentTimeMillis() > calendar.getTimeInMillis()) {
             calendar.add(Calendar.DAY_OF_YEAR, 1);
         }
@@ -260,6 +277,7 @@ public class HomePage extends AppCompatActivity {
         );
     }
 
+    // 🔔 יצירת ערוץ התראות (נדרש מאנדרואיד 8 ומעלה)
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "NotificationChannel";
